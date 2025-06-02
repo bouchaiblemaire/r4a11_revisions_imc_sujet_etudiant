@@ -20,4 +20,5 @@
     <string name="centimeter">centimetro</string>
     <string name="birthday">cumpleaños</string>
     <string name="conversion_problem">¡Problema de conversión de datos!</string>
+    <string name="input_problem">problema de entrada</string>
 </resources>
