@@ -64,6 +64,11 @@ public class MainActivity extends Activity {
 		this.ed_poids = (EditText) findViewById(R.id.poids);
 		this.group = (RadioGroup) findViewById(R.id.group);
 		this.date_picker = (DatePicker) this.findViewById(R.id.date_picker);
+		this.ed_prenom = (EditText) findViewById(R.id.prenom);
+		this.ed_taille = (EditText) findViewById(R.id.size);
+		this.tv_imc = findViewById(R.id.tv_imc);
+
+
 
 		// A compléter
 
@@ -80,7 +85,21 @@ public class MainActivity extends Activity {
 
 						try {
 
-							// A compléter
+							String nom = ed_nom.getText().toString().trim();
+							String prenom = ed_prenom.getText().toString().trim();
+							String dateNaissance = getDateFromDatePicker();
+							float poids = getAndConvertPoids();
+							float taille = getAndConvertTailleInCm();
+
+
+							// Conversion en m
+							if (checkIfTailleInCm()) {
+								taille = taille / 100f;
+							}
+
+							FicheIMC fiche = new FicheIMC(nom, prenom, dateNaissance, taille, poids);
+							startActivityCalculIMC(fiche);
+
 
 						}
 						catch(IncorrectDataException e){
@@ -108,18 +127,19 @@ public class MainActivity extends Activity {
 
 	// Converti le poids de la TextView en float
 	private float getAndConvertPoids() throws IncorrectDataException {
-
-
-		return 0.0f;
+		String poids = ed_poids.getText().toString().trim();
+		if (poids.isEmpty()) throw new IncorrectDataException("poids non-saisie");
+		return convertStringToFloat(poids);
 	}
 
 	// Converti la taille de la TextView  en centimètres
 	// Tiens compte du choix des boutons radios.
 	private float getAndConvertTailleInCm() throws IncorrectDataException {
+		String taille = ed_taille.getText().toString().trim();
+		if (taille.isEmpty()) throw new IncorrectDataException("taille non-saisie");
+		Float t = convertStringToFloat(taille);
 
-	   // A compléter
-
-		return 0.0f;
+		return checkIfTailleInCm() ? t : t * 100f;
 
 	}
 
@@ -134,7 +154,11 @@ public class MainActivity extends Activity {
 	// Converti une chaine représentant un float en un nombre float
 	public float convertStringToFloat(String stringToConvert) throws IncorrectDataException {
 
-		return 0.0f;
+		try {
+			return Float.parseFloat(stringToConvert);
+		} catch (NumberFormatException e) {
+			throw new IncorrectDataException("pas bon, incorrect data exception");
+		}
 	}
 
 
@@ -156,7 +180,9 @@ public String getDateFromDatePicker() {
     // Lance l'activité CalculIMC avec une ficheIMC dans les extras
 	private void startActivityCalculIMC(FicheIMC ficheIMC) {
 
-	  // A compléter
+	  Intent intent = new Intent(MainActivity.this, CalculIMC.class);
+	  intent.putExtra(FICHE_IMC, ficheIMC);
+	  startActivityForResult(intent, REQ_IMC);
 	}
 
 
